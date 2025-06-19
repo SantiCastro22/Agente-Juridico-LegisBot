@@ -1,12 +1,9 @@
-# requirements.txt para agente CAG con LangChain y dependencias necesarias
+# requirements.txt para agente con LangChain y dependencias necesarias
 langchain
 langchain-openai
-transformers
-torch
-sentence-transformers
-scikit-learn
-pandas
-matplotlib
-tqdm
+langchain_community
 python-dotenv
-tiktoken
+streamlit
+docx
+PyPDF2
+Chroma

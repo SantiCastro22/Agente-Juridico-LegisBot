@@ -40,7 +40,7 @@ def load_all_texts_from_data() -> str:
     return "\n\n".join(all_texts)
 
 def is_cache_valid(cache_id: str) -> bool:
-    # Gemini no da endpoint directo para validar, pero podemos intentar una consulta dummy
+    #verificacion de cache almacenada
     query_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key={API_KEY}"
     query_body = {
         "contents": [
@@ -65,7 +65,7 @@ all_text = load_all_texts_from_data()
 documento_bytes = all_text.encode("utf-8")
 documento_b64 = base64.b64encode(documento_bytes).decode("utf-8")
 
-# 2. Reutilizar cache si existe y es válido
+# 2. Reutilizar cache si existe
 if os.path.exists(CACHE_ID_FILE):
     with open(CACHE_ID_FILE) as f:
         cache_id = f.read().strip()
@@ -76,7 +76,7 @@ if os.path.exists(CACHE_ID_FILE):
         cache_id = None
 else:
     cache_id = None
-
+#crear cache si no existe o es inválido
 if not cache_id:
     cache_url = f"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={API_KEY}"
     cache_body = {

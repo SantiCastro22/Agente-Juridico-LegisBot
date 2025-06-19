@@ -152,7 +152,7 @@ def guardar_documento_generado(respuesta_str):
         else:
             safe_name = "plantilla"
             
-        # Generar nombre único con timestamp
+        # Generar nombre
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_path = os.path.join(output_dir, f"{safe_name}_{timestamp}.txt")
         

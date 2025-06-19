@@ -83,7 +83,7 @@ def build_rag_chain(data_dir: str, persist_path: str = None):
     # Split
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splits = splitter.split_documents(docs)
-    # Filtrar splits para asegurar que el contenido es string y no None
+    # Filtrado de splits para asegurar que el contenido es string y no None
     valid_texts = []
     valid_metadatas = []
     for d in splits:
@@ -97,11 +97,11 @@ def build_rag_chain(data_dir: str, persist_path: str = None):
     # DEBUG: Mostrar tipos y longitud
     print(f"[DEBUG] valid_texts: {len(valid_texts)} elementos, tipos: {[type(t) for t in valid_texts][:5]}")
     print(f"[DEBUG] valid_metadatas: {len(valid_metadatas)} elementos")
-    # Asegurar que ambas listas tengan la misma longitud
     if len(valid_texts) != len(valid_metadatas):
         min_len = min(len(valid_texts), len(valid_metadatas))
         valid_texts = valid_texts[:min_len]
         valid_metadatas = valid_metadatas[:min_len]
+
     # Embeddings y vectorstore
     embeddings = LMStudioEmbeddings(
         api_base=get_env_var("OPENAI_API_BASE"),
@@ -111,7 +111,7 @@ def build_rag_chain(data_dir: str, persist_path: str = None):
     os.makedirs(persist_dir, exist_ok=True)
     # Solo pasar strings planos
     valid_texts = [t for t in valid_texts if isinstance(t, str)]
-    # Recortar textos a 8191 caracteres (límite típico de modelos de embeddings)
+    # Recortar textos a 8191 caracteres (límite de modelos de embeddings)
     texts_for_embeddings = [t[:8191] for t in valid_texts if isinstance(t, str) and t.strip()]
     print(f"DEBUG: tipos y longitud de textos para embeddings: {[type(t) for t in texts_for_embeddings]}, {len(texts_for_embeddings)}")
     print("DEBUG: texts_for_embeddings =", texts_for_embeddings)
@@ -120,11 +120,11 @@ def build_rag_chain(data_dir: str, persist_path: str = None):
         print("DEBUG: type(texts_for_embeddings[0]) =", type(texts_for_embeddings[0]))
     for idx, t in enumerate(texts_for_embeddings):
         print(f"[DEBUG] Texto {idx}: longitud={len(t)}, inicio='{t[:60]}', fin='{t[-60:]}'")
-    # Antes de pasar a embeddings:
     texts_for_embeddings = [str(t) for t in texts_for_embeddings if t and isinstance(t, str)]
     print("DEBUG: texts_for_embeddings (final) =", texts_for_embeddings)
     # Obtener embeddings manualmente
     all_embeddings = embeddings.embed_documents(texts_for_embeddings)
+    
     # Crear Chroma usando la función de embeddings personalizada
     docs_for_chroma = [
         Document(page_content=text, metadata=meta)
